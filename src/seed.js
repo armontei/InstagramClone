@@ -42,7 +42,7 @@ export function seedDatabase(firebase) {
         firebase.firestore().collection('users').add(users[k]);
     }
 
-    for (let i = 1; i <= 5; ++1) {
+    for (let i = 1; i <= 5; ++i) {
         firebase
         .firestore()
         .collection('photos')

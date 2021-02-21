@@ -1,32 +1,25 @@
-import { firebase, FieldValue } from "./lib/firebase";
-import FirebaseContext from "./context/firebase";
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-function App() {
+import * as ROUTES from './constants/routes';
+const Dashboard = lazy(() => import('./pages/dashboard'));
+const Login = lazy(() => import('./pages/login'));
+const SignUp = lazy(() => import('./pages/signup'));
+const Profile = lazy(() => import('./pages/profile'));
+const NotFound = lazy(() => import('./pages/not-found'));
+
+export default function App() {
   return (
-    <FirebaseContext.Provider value ={{ firebase, FieldValue }}>
-      <h1 className="text-red-500">Hello World!</h1>
-    </FirebaseContext.Provider>
+    <Router>
+      <Suspense fallback={<p>Loading...</p>}>
+        <Switch>
+          <Route path={ROUTES.LOGIN} component={Login} />
+          <Route path={ROUTES.SIGN_UP} component={SignUp} />
+          <Route path={ROUTES.PROFILE} component={Profile} />
+          <Route path={ROUTES.DASHBOARD} component={Dashboard} exact />
+          <Route path={ROUTES.NOT_FOUND} component={NotFound} />
+        </Switch>
+      </Suspense>
+    </Router>
   );
 }
-
-export default App;
-
-// < !--The core Firebase JS SDK is always required and must be listed first-- >
-// <script src="https://www.gstatic.com/firebasejs/8.2.8/firebase-app.js"></script>
-
-// <!--TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries -->
-
-// <script>
-//   // Your web app's Firebase configuration
-//   var firebaseConfig = {
-//     apiKey: "AIzaSyA_C0tKU78JQICf919-dTd56qNk2qjX_bs",
-//     authDomain: "instagram-clone-8dfd2.firebaseapp.com",
-//     projectId: "instagram-clone-8dfd2",
-//     storageBucket: "instagram-clone-8dfd2.appspot.com",
-//     messagingSenderId: "315780468379",
-//     appId: "1:315780468379:web:56970ce747e59f3966803e"
-//   };
-//   // Initialize Firebase
-//   firebase.initializeApp(firebaseConfig);
-// </script>
