@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import iPhone from '../images/iphone-with-profile.jpg';
 import logo from '../images/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import FirebaseContext from '../context/firebase';
 import * as ROUTES from '../constants/routes';
 
 // =====================
@@ -56,15 +57,46 @@ import * as ROUTES from '../constants/routes';
 //   - https://reactjs.org/docs/hooks-state.html
 
 export default function Login() {
+    const history = useHistory();
+    const { firebase } = useContext(FirebaseContext);
     const [emailAddress, setEmailAddress] = useState('');
     const [password, setPassword] = useState('');
 
     const [error, setError] = useState('');
     const isInvalid = password === '' || emailAddress === '';
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            await firebase.auth().signInWithEmailAndPassword(emailAddress, password);
+            history.push(ROUTES.DASHBOARD)
+        } catch (error) {
+            setEmailAddress('');
+            setPassword('');
+            setError(error.message);
+        }
+    }
+
     useEffect(() => {
         document.title = 'Login - Instagram'
-    }, [])
+    }, []);
+
+    // user actions
+    // happy & sad scenarios
+
+    // what happens when a user clicks login? -> firebase
+    // a async function that can handle login
+    // handle a succesful login with 
+    // await firebase.auth().signInWithEmailAndPassword(emailAddress, password);
+
+    // wrap the await function call to firebase in a try/catch
+    // error: catch(error)
+    // setError(error.message)
+
+    // extra learnings: test.com
+    // handle the email address validation client side
+    // removes a network call!
 
     return (
         <div className="container flex mx-auto max-w-screen-md items-center h-screen">
@@ -77,8 +109,9 @@ export default function Login() {
                     <h1 className="flex justify-center w-full">
                         <img src={logo} alt="Instagram" className="mt-2 w-6/12 mb-4" />
                     </h1>
+                    {error && <p className="mb-4 text-red-500">{error}</p>}
                     
-                    <form action="POST">
+                    <form onSubmit={handleLogin} action="POST">
                         <input 
                         type="text" 
                         aria-label="Enter your email address" 
